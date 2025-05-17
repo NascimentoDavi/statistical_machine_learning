@@ -4,6 +4,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
+from sklearn.metrics import classification_report
 import matplotlib.pyplot as plt
 
 DATASET = './datasets/loan3000.csv'
@@ -45,7 +46,8 @@ y_pred = knn.predict(x_test)
 
 # Avaliar acurácia
 accuracy = accuracy_score(y_test, y_pred)
-# print(f"Acurácia do KNN (k=5): {accuracy:.2f}")
+print(f"Acurácia do KNN (k=5): {accuracy:.2f}")
+print(classification_report(y_test, y_pred, target_names=label_encod_outcome.classes_))
 
 # Gerar matriz de confusão
 # Na matriz de confusã comparamos o que o modelo previu com a verdade em si, por isso utilizamos y_test e y_pred
@@ -58,3 +60,12 @@ disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=label_encod_ou
 disp.plot(cmap=plt.cm.Blues)
 plt.title("Matriz de Confusão - KNN")
 plt.show()
+
+report = classification_report(y_test, y_pred, target_names=label_encod_outcome.classes_, output_dict=True)
+
+# Transformar em dataframe
+report_df = pd.DataFrame(report).transpose()
+
+report_df.to_csv('./metrics/knn_classification_report.csv', index=True)
+
+print("Relatório de metricas salvo em: /metrics/knn_classification_report.csv")
